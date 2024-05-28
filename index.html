@@ -1,22 +1,45 @@
 <!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Uploader</title>
 </head>
+
 <body>
     <h1>Upload JSON File</h1>
+
+    <!-- Instructions for using Figma extension -->
+    <h2>Get JSON file using Figma Extension "Export/Import Variables"</h2>
+    <ol>
+        <li>Open your Figma project.</li>
+        <li>Go to Plugins and search for <a href="https://www.figma.com/community/plugin/1256972111705530093"
+                target="_blank">"Export/Import Variables"</a>.</li>
+        <li>Use the extension to export your variables into a JSON file.</li>
+        <li>Ensure the exported JSON matches the required input format for this project.</li>
+    </ol>
+
+    <!-- Upload form -->
     <form id="uploadForm" enctype="multipart/form-data">
         <input type="file" name="file" accept=".json">
         <button type="submit">Upload</button>
     </form>
-    <pre id="result"></pre>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- Display download links -->
     <div id="downloadLinks"></div>
 
+    <!-- Display result -->
+    <h2>Uploaded JSON Data</h2>
+    <pre id="result"></pre>
+
     <script>
-        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const formData = new FormData(this);
 
@@ -24,14 +47,14 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-                generateDownloadLinks(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                    generateDownloadLinks(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
 
         function generateDownloadLinks(data) {
@@ -55,4 +78,5 @@
         }
     </script>
 </body>
+
 </html>
