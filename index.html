@@ -1,0 +1,58 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Uploader</title>
+</head>
+<body>
+    <h1>Upload JSON File</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".json">
+        <button type="submit">Upload</button>
+    </form>
+    <pre id="result"></pre>
+    <div id="downloadLinks"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('http://localhost:3000/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                generateDownloadLinks(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        function generateDownloadLinks(data) {
+            const downloadLinksDiv = document.getElementById('downloadLinks');
+            downloadLinksDiv.innerHTML = '';
+
+            for (const mode in data) {
+                const jsonContent = JSON.stringify(data[mode], null, 2);
+                const blob = new Blob([jsonContent], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${mode}.json`;
+                link.textContent = `Download ${mode}.json`;
+
+                const listItem = document.createElement('div');
+                listItem.appendChild(link);
+                downloadLinksDiv.appendChild(listItem);
+            }
+        }
+    </script>
+</body>
+</html>
